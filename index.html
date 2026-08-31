@@ -3,7 +3,8 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <title>Voice & Shake Adventure</title>
 
@@ -15,252 +16,16 @@
 
 body {
     margin: 0;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    background: #111827;
-    color: white;
     overflow: hidden;
+    background: #111827;
+    font-family: Arial, sans-serif;
+    touch-action: none;
 }
 
-#gameContainer {
+canvas {
+    display: block;
     width: 100vw;
     height: 100vh;
-    position: relative;
-    overflow: hidden;
-    background:
-        linear-gradient(#38bdf8 0%, #7dd3fc 55%, #4ade80 55%, #22c55e 100%);
-}
-
-/* =========================
-   HUD
-========================= */
-
-#hud {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 12px;
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.topRow {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.card {
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 8px 12px;
-    font-size: 14px;
-}
-
-/* =========================
-   DISTANCE BAR
-========================= */
-
-#progressBox {
-    background: rgba(0,0,0,0.55);
-    padding: 8px;
-    border-radius: 12px;
-}
-
-#progressBar {
-    width: 100%;
-    height: 14px;
-    background: #374151;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-#progressFill {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #22c55e, #facc15);
-    transition: width 0.3s;
-}
-
-/* =========================
-   WORLD
-========================= */
-
-#world {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-/* clouds */
-
-.cloud {
-    position: absolute;
-    font-size: 45px;
-    opacity: 0.8;
-}
-
-/* ground decoration */
-
-.tree {
-    position: absolute;
-    bottom: 18%;
-    font-size: 70px;
-}
-
-/* =========================
-   PLAYER
-========================= */
-
-#player {
-    position: absolute;
-    bottom: 18%;
-    left: 18%;
-    font-size: 70px;
-    transition: transform 0.1s;
-    z-index: 10;
-}
-
-.walking {
-    animation: walk 0.35s infinite alternate;
-}
-
-@keyframes walk {
-    from {
-        transform: translateY(0px);
-    }
-    to {
-        transform: translateY(-7px);
-    }
-}
-
-.jump {
-    animation: jumpAnimation 0.7s ease-out;
-}
-
-@keyframes jumpAnimation {
-    0% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-150px);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
-
-.attack {
-    animation: attackAnimation 0.3s;
-}
-
-@keyframes attackAnimation {
-    0% {
-        transform: translateX(0);
-    }
-
-    50% {
-        transform: translateX(30px) rotate(10deg);
-    }
-
-    100% {
-        transform: translateX(0);
-    }
-}
-
-/* =========================
-   MONSTER
-========================= */
-
-#monster {
-    position: absolute;
-    bottom: 18%;
-    right: 15%;
-    font-size: 75px;
-    display: none;
-    z-index: 10;
-}
-
-#monsterHpBox {
-    position: absolute;
-    bottom: 34%;
-    right: 10%;
-    width: 120px;
-    display: none;
-    z-index: 15;
-}
-
-#monsterHpText {
-    font-size: 13px;
-    text-align: center;
-    margin-bottom: 4px;
-}
-
-#monsterHp {
-    width: 100%;
-    height: 14px;
-    background: #374151;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-#monsterHpFill {
-    height: 100%;
-    width: 100%;
-    background: #ef4444;
-    transition: width 0.2s;
-}
-
-/* =========================
-   SOUND METER
-========================= */
-
-#soundBox {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    z-index: 30;
-    background: rgba(0,0,0,0.6);
-    border-radius: 15px;
-    padding: 10px;
-}
-
-#soundBar {
-    width: 100%;
-    height: 18px;
-    background: #374151;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-#soundFill {
-    height: 100%;
-    width: 0%;
-    background: #22c55e;
-}
-
-/* =========================
-   MESSAGE
-========================= */
-
-#message {
-    position: absolute;
-    top: 38%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    z-index: 50;
-    text-shadow: 2px 2px 5px black;
 }
 
 /* =========================
@@ -268,82 +33,142 @@ body {
 ========================= */
 
 #startScreen {
-    position: absolute;
+    position: fixed;
     inset: 0;
-    z-index: 100;
-    background: linear-gradient(135deg, #111827, #1e3a8a);
+
+    background: linear-gradient(
+        135deg,
+        #111827,
+        #1e3a8a
+    );
+
+    color: white;
+
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+
     text-align: center;
+
     padding: 25px;
+
+    z-index: 100;
 }
 
-.startCard {
+.card {
     max-width: 500px;
 }
 
-.startCard h1 {
-    font-size: 32px;
+h1 {
+    font-size: 30px;
 }
 
-.startCard p {
-    line-height: 1.7;
+p {
+    line-height: 1.8;
     color: #d1d5db;
 }
 
 button {
-    border: none;
-    border-radius: 15px;
-    padding: 16px 25px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 15px;
-}
 
-#startButton {
-    background: #22c55e;
-    color: white;
     width: 100%;
+
+    padding: 17px;
+
+    margin-top: 15px;
+
+    border: none;
+
+    border-radius: 15px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    background: #22c55e;
+
+    color: white;
+
 }
 
-#startButton:active {
+button:active {
     transform: scale(0.97);
 }
 
-#statsButton {
-    background: #3b82f6;
+/* =========================
+   SOUND METER
+========================= */
+
+#soundUI {
+
+    position: fixed;
+
+    bottom: 20px;
+
+    left: 20px;
+
+    right: 20px;
+
     color: white;
+
+    z-index: 20;
+
+}
+
+#soundBar {
+
+    width: 100%;
+
+    height: 20px;
+
+    background: rgba(0,0,0,0.5);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+#soundFill {
+
+    width: 0%;
+
+    height: 100%;
+
+    background: #22c55e;
+
+    transition: width 0.05s;
+
 }
 
 /* =========================
-   STATISTICS
+   MESSAGE
 ========================= */
 
-#statsPanel {
-    display: none;
-    position: absolute;
-    inset: 0;
-    z-index: 200;
-    background: rgba(0,0,0,0.9);
-    padding: 30px;
-    overflow-y: auto;
-}
+#message {
 
-.statsCard {
-    max-width: 500px;
-    margin: auto;
-    background: #1f2937;
-    border-radius: 20px;
-    padding: 25px;
-}
+    position: fixed;
 
-.stat {
-    padding: 12px;
-    margin: 8px 0;
-    background: #374151;
-    border-radius: 10px;
+    top: 45%;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: white;
+
+    text-align: center;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    text-shadow:
+        2px 2px 5px black;
+
+    z-index: 30;
+
 }
 </style>
 
@@ -351,167 +176,55 @@ button {
 
 <body>
 
-<div id="gameContainer">
+<canvas id="gameCanvas"></canvas>
+
+<div id="soundUI">
 
 ```
-<!-- HUD -->
+🎤 เสียงของคุณ
 
-<div id="hud">
+<div id="soundBar">
 
-    <div class="topRow">
-
-        <div class="card">
-            ❤️ HP: <span id="playerHp">100</span>
-        </div>
-
-        <div class="card">
-            🏆 Score: <span id="score">0</span>
-        </div>
-
-        <div class="card">
-            📍 <span id="distance">0</span> m
-        </div>
-
-    </div>
-
-    <div id="progressBox">
-
-        <div style="font-size:13px;margin-bottom:5px">
-            🗺️ การเดินทาง
-        </div>
-
-        <div id="progressBar">
-            <div id="progressFill"></div>
-        </div>
-
-    </div>
+    <div id="soundFill"></div>
 
 </div>
-
-
-<!-- WORLD -->
-
-<div id="world">
-
-    <div class="cloud" style="top:20%;left:10%">☁️</div>
-    <div class="cloud" style="top:12%;right:15%">☁️</div>
-
-    <div class="tree" style="left:5%">🌳</div>
-    <div class="tree" style="left:70%">🌲</div>
-    <div class="tree" style="right:5%">🌳</div>
-
-    <div id="player">🧍‍♂️</div>
-
-    <div id="monster">👾</div>
-
-    <div id="monsterHpBox">
-
-        <div id="monsterHpText">
-            👾 HP: <span id="monsterHpNumber">100</span>
-        </div>
-
-        <div id="monsterHp">
-            <div id="monsterHpFill"></div>
-        </div>
-
-    </div>
+```
 
 </div>
-
-
-<!-- MESSAGE -->
 
 <div id="message">
-    🎤 พูดเพื่อเดิน<br>
-    🔊 เสียงดังเพื่อกระโดด
-</div>
 
-
-<!-- SOUND -->
-
-<div id="soundBox">
-
-    🎤 ระดับเสียง
-
-    <div id="soundBar">
-        <div id="soundFill"></div>
-    </div>
+```
+🎤 พูดเพื่อเดิน<br>
+📳 เขย่าเพื่อต่อย
+```
 
 </div>
-
-
-<!-- START SCREEN -->
 
 <div id="startScreen">
 
-    <div class="startCard">
+```
+<div class="card">
 
-        <h1>🎮 VOICE & SHAKE ADVENTURE</h1>
+    <h1>🎮 VOICE & SHAKE ADVENTURE</h1>
 
-        <p>
+    <p>
 
-            🎤 พูดใส่ไมโครโฟนเพื่อเดิน<br>
+        🎤 พูดเพื่อเดิน<br>
 
-            🔊 พูดเสียงดังเพื่อกระโดด<br>
+        🔊 พูดเสียงดังเพื่อกระโดด<br>
 
-            📳 เขย่ามือถือเพื่อต่อยมอนสเตอร์<br>
+        📳 เขย่าโทรศัพท์เพื่อต่อย<br>
 
-            👾 กำจัดมอนสเตอร์และเดินทางไปให้ไกลที่สุด!
+        👾 กำจัดมอนสเตอร์เพื่อเดินทางต่อ
 
-        </p>
+    </p>
 
-        <button id="startButton">
+    <button onclick="startGame()">
 
-            🚀 อนุญาตและเริ่มเกม
+        🚀 อนุญาตและเริ่มเกม
 
-        </button>
-
-        <br>
-
-        <button id="statsButton">
-
-            📊 ดูสถิติ
-
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- STATS -->
-
-<div id="statsPanel">
-
-    <div class="statsCard">
-
-        <h1>📊 สถิติผู้เล่น</h1>
-
-        <div class="stat">
-            📍 ระยะทางทั้งหมด:
-            <span id="totalDistance">0</span> m
-        </div>
-
-        <div class="stat">
-            👾 มอนสเตอร์ที่กำจัด:
-            <span id="totalMonsters">0</span>
-        </div>
-
-        <div class="stat">
-            👊 จำนวนหมัด:
-            <span id="totalPunches">0</span>
-        </div>
-
-        <div class="stat">
-            🏆 คะแนนสูงสุด:
-            <span id="highScore">0</span>
-        </div>
-
-        <button onclick="closeStats()">
-            ❌ ปิด
-        </button>
-
-    </div>
+    </button>
 
 </div>
 ```
@@ -520,163 +233,534 @@ button {
 
 <script>
 
-/* =========================
-   VARIABLES
-========================= */
+/* =================================
+   CANVAS
+================================= */
+
+const canvas =
+document.getElementById("gameCanvas");
+
+const ctx =
+canvas.getContext("2d");
+
+
+function resizeCanvas() {
+
+    canvas.width =
+    window.innerWidth;
+
+    canvas.height =
+    window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =================================
+   GAME VARIABLES
+================================= */
 
 let gameStarted = false;
 
 let distance = 0;
+
 let score = 0;
 
-let playerHP = 100;
+let cameraX = 0;
 
-let monsterHP = 100;
-let monsterActive = false;
+let worldOffset = 0;
 
-let totalPunches = 0;
-let monstersDefeated = 0;
 
-let audioContext;
+/* =================================
+   PLAYER
+================================= */
+
+const player = {
+
+    x: 150,
+
+    y: 0,
+
+    width: 50,
+
+    height: 80,
+
+    velocityY: 0,
+
+    velocityX: 0,
+
+    speed: 3,
+
+    jumping: false,
+
+    attacking: false,
+
+    walkFrame: 0,
+
+    walkTimer: 0
+
+};
+
+
+/* =================================
+   PHYSICS
+================================= */
+
+const gravity = 0.8;
+
+const groundOffset = 130;
+
+
+/* =================================
+   MONSTER
+================================= */
+
+const monster = {
+
+    active: false,
+
+    x: 0,
+
+    y: 0,
+
+    width: 65,
+
+    height: 65,
+
+    hp: 100,
+
+    direction: 1,
+
+    animation: 0,
+
+    defeated: 0
+
+};
+
+
+/* =================================
+   WORLD OBJECTS
+================================= */
+
+let trees = [];
+
+
+function createWorld() {
+
+    for (let i = 0; i < 50; i++) {
+
+        trees.push({
+
+            x: i * 250 +
+            Math.random() * 150,
+
+            size:
+            60 + Math.random() * 50
+
+        });
+
+    }
+
+}
+
+createWorld();
+
+
+/* =================================
+   MICROPHONE
+================================= */
+
 let analyser;
-let microphone;
 
-let animationFrame;
+let audioData;
+
+
+async function setupMicrophone() {
+
+    const stream =
+    await navigator.mediaDevices
+    .getUserMedia({
+
+        audio: true
+
+    });
+
+
+    const audioContext =
+    new (
+        window.AudioContext ||
+        window.webkitAudioContext
+    )();
+
+
+    analyser =
+    audioContext.createAnalyser();
+
+
+    analyser.fftSize = 256;
+
+
+    const source =
+    audioContext
+    .createMediaStreamSource(stream);
+
+
+    source.connect(analyser);
+
+
+    audioData =
+    new Uint8Array(
+        analyser.frequencyBinCount
+    );
+
+}
+
+
+/* =================================
+   SOUND DETECTION
+================================= */
+
+let volume = 0;
+
+
+function checkSound() {
+
+    if (!analyser) return;
+
+
+    analyser.getByteFrequencyData(
+        audioData
+    );
+
+
+    let sum = 0;
+
+
+    for (
+        let i = 0;
+        i < audioData.length;
+        i++
+    ) {
+
+        sum += audioData[i];
+
+    }
+
+
+    volume =
+    sum / audioData.length;
+
+
+    const percent =
+    Math.min(volume * 2, 100);
+
+
+    document
+    .getElementById("soundFill")
+    .style.width =
+    percent + "%";
+
+
+    /* =============================
+       WALK
+    ============================= */
+
+    if (
+        volume > 10 &&
+        !monster.active
+    ) {
+
+        player.velocityX =
+        player.speed;
+
+    }
+
+    else {
+
+        player.velocityX = 0;
+
+    }
+
+
+    /* =============================
+       JUMP
+    ============================= */
+
+    if (
+
+        volume > 45 &&
+
+        !player.jumping &&
+
+        !monster.active
+
+    ) {
+
+        jump();
+
+    }
+
+}
+
+
+/* =================================
+   JUMP
+================================= */
+
+function jump() {
+
+    player.velocityY = -16;
+
+    player.jumping = true;
+
+}
+
+
+/* =================================
+   MONSTER SPAWN
+================================= */
+
+let nextMonsterDistance = 100;
+
+
+function checkMonsterSpawn() {
+
+    if (
+
+        distance >= nextMonsterDistance &&
+
+        !monster.active
+
+    ) {
+
+        monster.active = true;
+
+        monster.hp = 100;
+
+        monster.x =
+        cameraX + canvas.width * 0.75;
+
+        monster.y =
+        canvas.height -
+        groundOffset -
+        monster.height;
+
+
+        document
+        .getElementById("message")
+        .innerHTML =
+        "⚠️ มอนสเตอร์มาแล้ว!<br>📳 เขย่าเพื่อต่อย";
+
+
+    }
+
+}
+
+
+/* =================================
+   SHAKE DETECTION
+================================= */
 
 let lastShake = 0;
 
 
-/* =========================
-   HTML ELEMENTS
-========================= */
+function detectShake(event) {
 
-const player = document.getElementById("player");
-
-const monster = document.getElementById("monster");
-
-const monsterHpBox =
-document.getElementById("monsterHpBox");
-
-const soundFill =
-document.getElementById("soundFill");
-
-const distanceText =
-document.getElementById("distance");
-
-const scoreText =
-document.getElementById("score");
-
-const playerHpText =
-document.getElementById("playerHp");
-
-const progressFill =
-document.getElementById("progressFill");
-
-const monsterHpFill =
-document.getElementById("monsterHpFill");
-
-const monsterHpNumber =
-document.getElementById("monsterHpNumber");
-
-const message =
-document.getElementById("message");
+    if (!gameStarted) return;
 
 
-/* =========================
+    const acc =
+    event.accelerationIncludingGravity;
+
+
+    if (!acc) return;
+
+
+    const force =
+
+        Math.abs(acc.x || 0) +
+
+        Math.abs(acc.y || 0) +
+
+        Math.abs(acc.z || 0);
+
+
+    const now = Date.now();
+
+
+    if (
+
+        force > 32 &&
+
+        now - lastShake > 350
+
+    ) {
+
+        lastShake = now;
+
+        attack();
+
+    }
+
+}
+
+
+function attack() {
+
+    if (!monster.active) return;
+
+
+    player.attacking = true;
+
+
+    const damage =
+    Math.floor(
+        Math.random() * 15
+    ) + 10;
+
+
+    monster.hp -= damage;
+
+
+    if (monster.hp < 0) {
+
+        monster.hp = 0;
+
+    }
+
+
+    setTimeout(() => {
+
+        player.attacking = false;
+
+    }, 250);
+
+
+    if (monster.hp <= 0) {
+
+        defeatMonster();
+
+    }
+
+}
+
+
+/* =================================
+   MONSTER DEFEATED
+================================= */
+
+function defeatMonster() {
+
+    monster.active = false;
+
+    monster.defeated = 1;
+
+
+    score += 100;
+
+
+    nextMonsterDistance += 100;
+
+
+    document
+    .getElementById("message")
+    .innerHTML =
+    "🏆 ชนะแล้ว!<br>🎤 เดินทางต่อได้";
+
+
+    setTimeout(() => {
+
+        document
+        .getElementById("message")
+        .innerHTML =
+        "🎤 พูดเพื่อเดิน<br>🔊 เสียงดังเพื่อกระโดด";
+
+    }, 2000);
+
+}
+
+
+/* =================================
+   MOTION PERMISSION
+================================= */
+
+async function setupMotion() {
+
+    if (
+
+        typeof DeviceMotionEvent !==
+        "undefined" &&
+
+        typeof
+        DeviceMotionEvent.requestPermission ===
+        "function"
+
+    ) {
+
+        try {
+
+            await
+            DeviceMotionEvent
+            .requestPermission();
+
+        }
+
+        catch(error) {
+
+            console.log(error);
+
+        }
+
+    }
+
+
+    window.addEventListener(
+
+        "devicemotion",
+
+        detectShake
+
+    );
+
+}
+
+
+/* =================================
    START GAME
-========================= */
-
-document.getElementById("startButton")
-.addEventListener("click", startGame);
-
+================================= */
 
 async function startGame() {
 
     try {
 
-        /* MICROPHONE */
+        await setupMicrophone();
 
-        const stream =
-        await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
-
-
-        audioContext =
-        new (window.AudioContext ||
-        window.webkitAudioContext)();
-
-
-        analyser =
-        audioContext.createAnalyser();
-
-
-        microphone =
-        audioContext.createMediaStreamSource(stream);
-
-
-        microphone.connect(analyser);
-
-
-        analyser.fftSize = 256;
-
-
-        /* MOTION SENSOR */
-
-        if (
-            typeof DeviceMotionEvent !== "undefined" &&
-            typeof DeviceMotionEvent.requestPermission === "function"
-        ) {
-
-            try {
-
-                await DeviceMotionEvent.requestPermission();
-
-            }
-
-            catch(error) {
-
-                console.log("Motion permission error:", error);
-
-            }
-
-        }
-
-
-        window.addEventListener(
-            "devicemotion",
-            detectShake
-        );
+        await setupMotion();
 
 
         gameStarted = true;
 
 
-        document.getElementById("startScreen")
-        .style.display = "none";
+        document
+        .getElementById("startScreen")
+        .style.display =
+        "none";
 
 
-        message.innerHTML =
-        "🎮 เริ่มเกมแล้ว!<br>🎤 พูดเพื่อเดิน";
-
-
-        setTimeout(() => {
-
-            message.innerHTML =
-            "🎤 พูดเพื่อเดิน<br>📳 เขย่าเพื่อต่อย";
-
-        }, 3000);
-
-
-        listenMicrophone();
-
+        gameLoop();
 
     }
 
     catch(error) {
 
         alert(
-            "ไม่สามารถเข้าถึงไมโครโฟนได้ กรุณาอนุญาต Permission"
+            "กรุณาอนุญาตไมโครโฟนก่อนเล่นเกม"
         );
 
         console.error(error);
@@ -686,481 +770,762 @@ async function startGame() {
 }
 
 
-/* =========================
-   MICROPHONE
-========================= */
+/* =================================
+   UPDATE GAME
+================================= */
 
-function listenMicrophone() {
+function update() {
 
-    const dataArray =
-    new Uint8Array(analyser.frequencyBinCount);
-
-
-    function update() {
-
-        if (!gameStarted) return;
+    checkSound();
 
 
-        analyser.getByteFrequencyData(dataArray);
+    /* =============================
+       PLAYER MOVEMENT
+    ============================= */
+
+    if (
+
+        player.velocityX > 0 &&
+
+        !monster.active
+
+    ) {
+
+        cameraX +=
+        player.velocityX;
 
 
-        let sum = 0;
+        distance += 0.1;
+
+        score++;
 
 
-        for (let i = 0; i < dataArray.length; i++) {
-
-            sum += dataArray[i];
-
-        }
+        player.walkTimer++;
 
 
-        const volume =
-        sum / dataArray.length;
+        if (
+            player.walkTimer > 8
+        ) {
+
+            player.walkFrame =
+            1 - player.walkFrame;
 
 
-        let percent =
-        Math.min(volume * 2, 100);
-
-
-        soundFill.style.width =
-        percent + "%";
-
-
-        /* =====================
-           WALK
-        ===================== */
-
-        if (!monsterActive) {
-
-            if (volume > 12) {
-
-                walk();
-
-            }
-
-            else {
-
-                player.classList.remove("walking");
-
-            }
-
-
-            /* =====================
-               JUMP
-            ===================== */
-
-            if (volume > 45) {
-
-                jump();
-
-            }
+            player.walkTimer = 0;
 
         }
-
-
-        animationFrame =
-        requestAnimationFrame(update);
 
     }
 
+
+    /* =============================
+       GRAVITY
+    ============================= */
+
+    player.velocityY += gravity;
+
+    player.y += player.velocityY;
+
+
+    const groundY =
+    canvas.height -
+    groundOffset -
+    player.height;
+
+
+    if (
+        player.y >= groundY
+    ) {
+
+        player.y = groundY;
+
+        player.velocityY = 0;
+
+        player.jumping = false;
+
+    }
+
+
+    /* =============================
+       MONSTER ANIMATION
+    ============================= */
+
+    if (monster.active) {
+
+        monster.animation += 0.08;
+
+
+        monster.x +=
+        monster.direction * 1.2;
+
+
+        const minX =
+        cameraX +
+        canvas.width * 0.55;
+
+
+        const maxX =
+        cameraX +
+        canvas.width * 0.8;
+
+
+        if (
+
+            monster.x < minX ||
+
+            monster.x > maxX
+
+        ) {
+
+            monster.direction *= -1;
+
+        }
+
+    }
+
+
+    checkMonsterSpawn();
+
+}
+
+
+/* =================================
+   DRAW BACKGROUND
+================================= */
+
+function drawBackground() {
+
+    /* SKY */
+
+    ctx.fillStyle =
+    "#38bdf8";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /* CLOUDS */
+
+    ctx.fillStyle =
+    "rgba(255,255,255,0.8)";
+
+
+    for (
+        let i = 0;
+        i < 5;
+        i++
+    ) {
+
+        const x =
+        (
+            i * 300 -
+            cameraX * 0.1
+        )
+        % (canvas.width + 300);
+
+
+        const y =
+        60 + i * 55;
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            30,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.arc(
+            x + 35,
+            y - 10,
+            35,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.arc(
+            x + 70,
+            y,
+            30,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+    }
+
+
+    /* GROUND */
+
+    ctx.fillStyle =
+    "#22c55e";
+
+    ctx.fillRect(
+
+        0,
+
+        canvas.height -
+        groundOffset,
+
+        canvas.width,
+
+        groundOffset
+
+    );
+
+}
+
+
+/* =================================
+   DRAW TREES
+================================= */
+
+function drawTrees() {
+
+    for (const tree of trees) {
+
+        const screenX =
+        tree.x - cameraX * 0.5;
+
+
+        if (
+
+            screenX < -150 ||
+
+            screenX >
+            canvas.width + 150
+
+        ) continue;
+
+
+        /* trunk */
+
+        ctx.fillStyle =
+        "#78350f";
+
+        ctx.fillRect(
+
+            screenX,
+
+            canvas.height -
+            groundOffset -
+            tree.size,
+
+            20,
+
+            tree.size
+
+        );
+
+
+        /* leaves */
+
+        ctx.fillStyle =
+        "#15803d";
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+
+            screenX + 10,
+
+            canvas.height -
+            groundOffset -
+            tree.size,
+
+            tree.size * 0.55,
+
+            0,
+
+            Math.PI * 2
+
+        );
+
+
+        ctx.fill();
+
+    }
+
+}
+
+
+/* =================================
+   DRAW PLAYER
+================================= */
+
+function drawPlayer() {
+
+    const x = player.x;
+
+    const y = player.y;
+
+
+    ctx.save();
+
+
+    /* ATTACK */
+
+    if (player.attacking) {
+
+        ctx.translate(15, 0);
+
+    }
+
+
+    /* BODY */
+
+    ctx.fillStyle =
+    "#2563eb";
+
+
+    ctx.fillRect(
+
+        x + 15,
+
+        y + 25,
+
+        25,
+
+        35
+
+    );
+
+
+    /* HEAD */
+
+    ctx.fillStyle =
+    "#f5cba7";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+
+        x + 27,
+
+        y + 15,
+
+        15,
+
+        0,
+
+        Math.PI * 2
+
+    );
+
+
+    ctx.fill();
+
+
+    /* LEGS ANIMATION */
+
+    ctx.strokeStyle =
+    "#111827";
+
+    ctx.lineWidth = 8;
+
+
+    ctx.beginPath();
+
+
+    if (
+        player.velocityX > 0 &&
+        !monster.active
+    ) {
+
+        const leg =
+        player.walkFrame ? 10 : -10;
+
+
+        ctx.moveTo(
+            x + 22,
+            y + 60
+        );
+
+
+        ctx.lineTo(
+            x + 20 + leg,
+            y + 80
+        );
+
+
+        ctx.moveTo(
+            x + 32,
+            y + 60
+        );
+
+
+        ctx.lineTo(
+            x + 35 - leg,
+            y + 80
+        );
+
+    }
+
+    else {
+
+        ctx.moveTo(
+            x + 22,
+            y + 60
+        );
+
+        ctx.lineTo(
+            x + 20,
+            y + 80
+        );
+
+
+        ctx.moveTo(
+            x + 32,
+            y + 60
+        );
+
+        ctx.lineTo(
+            x + 35,
+            y + 80
+        );
+
+    }
+
+
+    ctx.stroke();
+
+
+    /* ARMS */
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+        x + 15,
+        y + 35
+    );
+
+
+    if (player.attacking) {
+
+        ctx.lineTo(
+            x + 60,
+            y + 30
+        );
+
+    }
+
+    else {
+
+        ctx.lineTo(
+            x + 5,
+            y + 55
+        );
+
+    }
+
+
+    ctx.stroke();
+
+
+    ctx.restore();
+
+}
+
+
+/* =================================
+   DRAW MONSTER
+================================= */
+
+function drawMonster() {
+
+    if (!monster.active) return;
+
+
+    const screenX =
+    monster.x - cameraX;
+
+
+    const bob =
+    Math.sin(
+        monster.animation
+    ) * 8;
+
+
+    /* BODY */
+
+    ctx.fillStyle =
+    "#ef4444";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+
+        screenX +
+        monster.width / 2,
+
+        monster.y +
+        monster.height / 2 +
+        bob,
+
+        monster.width / 2,
+
+        0,
+
+        Math.PI * 2
+
+    );
+
+
+    ctx.fill();
+
+
+    /* EYES */
+
+    ctx.fillStyle =
+    "white";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        screenX + 20,
+        monster.y + 25 + bob,
+        8,
+        0,
+        Math.PI * 2
+    );
+
+
+    ctx.arc(
+        screenX + 45,
+        monster.y + 25 + bob,
+        8,
+        0,
+        Math.PI * 2
+    );
+
+
+    ctx.fill();
+
+
+    /* PUPILS */
+
+    ctx.fillStyle =
+    "black";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        screenX + 20,
+        monster.y + 25 + bob,
+        3,
+        0,
+        Math.PI * 2
+    );
+
+
+    ctx.arc(
+        screenX + 45,
+        monster.y + 25 + bob,
+        3,
+        0,
+        Math.PI * 2
+    );
+
+
+    ctx.fill();
+
+
+    /* HP BAR */
+
+    ctx.fillStyle =
+    "#374151";
+
+
+    ctx.fillRect(
+        screenX,
+        monster.y - 20,
+        70,
+        10
+    );
+
+
+    ctx.fillStyle =
+    "#ef4444";
+
+
+    ctx.fillRect(
+
+        screenX,
+
+        monster.y - 20,
+
+        70 *
+        (monster.hp / 100),
+
+        10
+
+    );
+
+}
+
+
+/* =================================
+   DRAW HUD
+================================= */
+
+function drawHUD() {
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.55)";
+
+
+    ctx.fillRect(
+        10,
+        10,
+        190,
+        80
+    );
+
+
+    ctx.fillStyle =
+    "white";
+
+
+    ctx.font =
+    "18px Arial";
+
+
+    ctx.fillText(
+
+        "📍 Distance: " +
+        Math.floor(distance) +
+        " m",
+
+        20,
+        38
+
+    );
+
+
+    ctx.fillText(
+
+        "🏆 Score: " +
+        score,
+
+        20,
+        68
+
+    );
+
+
+    /* PROGRESS */
+
+    ctx.fillStyle =
+    "#374151";
+
+
+    ctx.fillRect(
+
+        canvas.width - 210,
+
+        20,
+
+        190,
+
+        20
+
+    );
+
+
+    ctx.fillStyle =
+    "#22c55e";
+
+
+    ctx.fillRect(
+
+        canvas.width - 210,
+
+        20,
+
+        (
+            distance % 100
+        ) * 1.9,
+
+        20
+
+    );
+
+
+    ctx.fillStyle =
+    "white";
+
+
+    ctx.font =
+    "14px Arial";
+
+
+    ctx.fillText(
+
+        "Next Monster: " +
+        Math.floor(nextMonsterDistance) +
+        "m",
+
+        canvas.width - 210,
+
+        65
+
+    );
+
+}
+
+
+/* =================================
+   GAME LOOP
+================================= */
+
+function gameLoop() {
 
     update();
 
-}
 
+    ctx.clearRect(
 
-/* =========================
-   WALK
-========================= */
+        0,
 
-function walk() {
+        0,
 
-    if (monsterActive) return;
+        canvas.width,
 
+        canvas.height
 
-    player.classList.add("walking");
-
-
-    distance += 0.12;
-
-
-    score += 1;
-
-
-    updateGame();
-
-
-    checkMonster();
-
-
-}
-
-
-/* =========================
-   JUMP
-========================= */
-
-let jumping = false;
-
-
-function jump() {
-
-    if (jumping) return;
-
-
-    jumping = true;
-
-
-    player.classList.add("jump");
-
-
-    setTimeout(() => {
-
-        player.classList.remove("jump");
-
-        jumping = false;
-
-    }, 700);
-
-}
-
-
-/* =========================
-   MONSTER SYSTEM
-========================= */
-
-function checkMonster() {
-
-    /*
-    Monster every 100 meters
-    */
-
-    if (
-        Math.floor(distance) > 0 &&
-        Math.floor(distance) % 100 === 0 &&
-        !monsterActive
-    ) {
-
-        spawnMonster();
-
-    }
-
-}
-
-
-function spawnMonster() {
-
-    monsterActive = true;
-
-    monsterHP = 100;
-
-
-    monster.style.display = "block";
-
-    monsterHpBox.style.display = "block";
-
-
-    message.innerHTML =
-    "⚠️ MONSTER APPEARED!<br>📳 เขย่ามือถือเพื่อต่อย!";
-
-
-}
-
-
-function attackMonster() {
-
-    if (!monsterActive) return;
-
-
-    player.classList.add("attack");
-
-
-    totalPunches++;
-
-
-    let damage =
-    Math.floor(Math.random() * 15) + 10;
-
-
-    monsterHP -= damage;
-
-
-    if (monsterHP < 0) {
-
-        monsterHP = 0;
-
-    }
-
-
-    updateMonsterHP();
-
-
-    setTimeout(() => {
-
-        player.classList.remove("attack");
-
-    }, 300);
-
-
-    if (monsterHP <= 0) {
-
-        defeatMonster();
-
-    }
-
-}
-
-
-/* =========================
-   DEFEAT MONSTER
-========================= */
-
-function defeatMonster() {
-
-    monsterActive = false;
-
-
-    monstersDefeated++;
-
-
-    score += 100;
-
-
-    monster.style.display = "none";
-
-    monsterHpBox.style.display = "none";
-
-
-    message.innerHTML =
-    "🏆 MONSTER DEFEATED!<br>🎤 เดินทางต่อได้!";
-
-
-    setTimeout(() => {
-
-        message.innerHTML =
-        "🎤 พูดเพื่อเดิน<br>📳 เจอมอนสเตอร์ให้เขย่า";
-
-    }, 2000);
-
-
-    saveStats();
-
-}
-
-
-/* =========================
-   UPDATE GAME
-========================= */
-
-function updateGame() {
-
-    distanceText.textContent =
-    Math.floor(distance);
-
-
-    scoreText.textContent =
-    score;
-
-
-    playerHpText.textContent =
-    playerHP;
-
-
-    let progress =
-    (distance % 1000) / 10;
-
-
-    progressFill.style.width =
-    progress + "%";
-
-
-    saveStats();
-
-}
-
-
-/* =========================
-   MONSTER HP
-========================= */
-
-function updateMonsterHP() {
-
-    monsterHpNumber.textContent =
-    monsterHP;
-
-
-    monsterHpFill.style.width =
-    monsterHP + "%";
-
-}
-
-
-/* =========================
-   SHAKE DETECTION
-========================= */
-
-function detectShake(event) {
-
-    if (!gameStarted) return;
-
-
-    const acceleration =
-    event.accelerationIncludingGravity;
-
-
-    if (!acceleration) return;
-
-
-    const x = acceleration.x || 0;
-    const y = acceleration.y || 0;
-    const z = acceleration.z || 0;
-
-
-    const force =
-    Math.abs(x) +
-    Math.abs(y) +
-    Math.abs(z);
-
-
-    const now = Date.now();
-
-
-    /*
-    SHAKE THRESHOLD
-    */
-
-    if (
-
-        force > 35 &&
-
-        now - lastShake > 400
-
-    ) {
-
-        lastShake = now;
-
-
-        attackMonster();
-
-    }
-
-}
-
-
-/* =========================
-   SAVE STATISTICS
-========================= */
-
-function saveStats() {
-
-    let oldDistance =
-    Number(localStorage.getItem("totalDistance")) || 0;
-
-
-    let oldMonsters =
-    Number(localStorage.getItem("monstersDefeated")) || 0;
-
-
-    let oldPunches =
-    Number(localStorage.getItem("totalPunches")) || 0;
-
-
-    let highScore =
-    Number(localStorage.getItem("highScore")) || 0;
-
-
-    if (score > highScore) {
-
-        highScore = score;
-
-    }
-
-
-    localStorage.setItem(
-        "totalDistance",
-        Math.max(oldDistance, Math.floor(distance))
     );
 
 
-    localStorage.setItem(
-        "monstersDefeated",
-        Math.max(oldMonsters, monstersDefeated)
-    );
+    drawBackground();
+
+    drawTrees();
+
+    drawPlayer();
+
+    drawMonster();
+
+    drawHUD();
 
 
-    localStorage.setItem(
-        "totalPunches",
-        Math.max(oldPunches, totalPunches)
-    );
-
-
-    localStorage.setItem(
-        "highScore",
-        highScore
+    requestAnimationFrame(
+        gameLoop
     );
 
 }
-
-
-/* =========================
-   STATISTICS PANEL
-========================= */
-
-document.getElementById("statsButton")
-.addEventListener("click", showStats);
-
-
-function showStats() {
-
-    document.getElementById("totalDistance")
-    .textContent =
-    localStorage.getItem("totalDistance") || 0;
-
-
-    document.getElementById("totalMonsters")
-    .textContent =
-    localStorage.getItem("monstersDefeated") || 0;
-
-
-    document.getElementById("totalPunches")
-    .textContent =
-    localStorage.getItem("totalPunches") || 0;
-
-
-    document.getElementById("highScore")
-    .textContent =
-    localStorage.getItem("highScore") || 0;
-
-
-    document.getElementById("statsPanel")
-    .style.display = "block";
-
-}
-
-
-function closeStats() {
-
-    document.getElementById("statsPanel")
-    .style.display = "none";
-
-}
-
-
-/* =========================
-   PREVENT SCREEN SLEEP
-========================= */
-
-document.addEventListener(
-    "touchmove",
-    function(e) {
-
-        e.preventDefault();
-
-    },
-
-    { passive: false }
-
-);
 
 </script>
 
