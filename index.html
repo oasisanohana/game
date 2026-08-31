@@ -3,8 +3,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <title>Voice & Shake Adventure</title>
 
@@ -28,30 +27,17 @@ canvas {
     height: 100vh;
 }
 
-/* =========================
-   START SCREEN
-========================= */
-
+/* หน้าเริ่มเกม */
 #startScreen {
     position: fixed;
     inset: 0;
-
-    background: linear-gradient(
-        135deg,
-        #111827,
-        #1e3a8a
-    );
-
+    background: linear-gradient(135deg, #111827, #1e3a8a);
     color: white;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     text-align: center;
-
     padding: 25px;
-
     z-index: 100;
 }
 
@@ -69,106 +55,59 @@ p {
 }
 
 button {
-
     width: 100%;
-
     padding: 17px;
-
     margin-top: 15px;
-
     border: none;
-
     border-radius: 15px;
-
     font-size: 18px;
-
     font-weight: bold;
-
     cursor: pointer;
-
     background: #22c55e;
-
     color: white;
-
 }
 
 button:active {
     transform: scale(0.97);
 }
 
-/* =========================
-   SOUND METER
-========================= */
-
+/* แสดงระดับเสียง */
 #soundUI {
-
     position: fixed;
-
     bottom: 20px;
-
     left: 20px;
-
     right: 20px;
-
     color: white;
-
     z-index: 20;
-
 }
 
 #soundBar {
-
     width: 100%;
-
     height: 20px;
-
     background: rgba(0,0,0,0.5);
-
     border-radius: 20px;
-
     overflow: hidden;
-
 }
 
 #soundFill {
-
     width: 0%;
-
     height: 100%;
-
     background: #22c55e;
-
     transition: width 0.05s;
-
 }
 
-/* =========================
-   MESSAGE
-========================= */
-
+/* ข้อความ */
 #message {
-
     position: fixed;
-
-    top: 45%;
-
+    top: 42%;
     left: 50%;
-
     transform: translateX(-50%);
-
     color: white;
-
     text-align: center;
-
-    font-size: 22px;
-
+    font-size: 20px;
     font-weight: bold;
-
-    text-shadow:
-        2px 2px 5px black;
-
+    text-shadow: 2px 2px 5px black;
     z-index: 30;
-
 }
 </style>
 
@@ -179,26 +118,15 @@ button:active {
 <canvas id="gameCanvas"></canvas>
 
 <div id="soundUI">
-
-```
-🎤 เสียงของคุณ
-
-<div id="soundBar">
-
-    <div id="soundFill"></div>
-
-</div>
-```
-
+    🎤 ระดับเสียง
+    <div id="soundBar">
+        <div id="soundFill"></div>
+    </div>
 </div>
 
 <div id="message">
-
-```
-🎤 พูดเพื่อเดิน<br>
-📳 เขย่าเพื่อต่อย
-```
-
+    🎤 พูดเพื่อเดิน<br>
+    🔊 เสียงดังเพื่อกระโดด
 </div>
 
 <div id="startScreen">
@@ -209,21 +137,14 @@ button:active {
     <h1>🎮 VOICE & SHAKE ADVENTURE</h1>
 
     <p>
-
         🎤 พูดเพื่อเดิน<br>
-
-        🔊 พูดเสียงดังเพื่อกระโดด<br>
-
-        📳 เขย่าโทรศัพท์เพื่อต่อย<br>
-
-        👾 กำจัดมอนสเตอร์เพื่อเดินทางต่อ
-
+        🔊 พูดเสียงดังเพื่อกระโดดข้ามสิ่งกีดขวาง<br>
+        📳 เขย่าเพื่อต่อยมอนสเตอร์<br>
+        🪨🌵🕳️ ระวังสิ่งกีดขวาง!
     </p>
 
     <button onclick="startGame()">
-
         🚀 อนุญาตและเริ่มเกม
-
     </button>
 
 </div>
@@ -233,135 +154,198 @@ button:active {
 
 <script>
 
-/* =================================
+/* ================================
    CANVAS
-================================= */
+================================ */
 
-const canvas =
-document.getElementById("gameCanvas");
-
-const ctx =
-canvas.getContext("2d");
-
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
 function resizeCanvas() {
-
-    canvas.width =
-    window.innerWidth;
-
-    canvas.height =
-    window.innerHeight;
-
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
 resizeCanvas();
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
+window.addEventListener("resize", resizeCanvas);
 
 
-/* =================================
+/* ================================
    GAME VARIABLES
-================================= */
+================================ */
 
 let gameStarted = false;
 
 let distance = 0;
-
 let score = 0;
-
 let cameraX = 0;
 
-let worldOffset = 0;
+let playerHP = 100;
+
+let gameMessageTimer = 0;
 
 
-/* =================================
+/* ================================
    PLAYER
-================================= */
+================================ */
 
 const player = {
 
     x: 150,
-
     y: 0,
 
     width: 50,
-
     height: 80,
 
-    velocityY: 0,
-
     velocityX: 0,
+    velocityY: 0,
 
     speed: 3,
 
     jumping: false,
-
     attacking: false,
 
     walkFrame: 0,
+    walkTimer: 0,
 
-    walkTimer: 0
+    invincible: false
 
 };
 
 
-/* =================================
+/* ================================
    PHYSICS
-================================= */
+================================ */
 
 const gravity = 0.8;
-
 const groundOffset = 130;
 
 
-/* =================================
+/* ================================
    MONSTER
-================================= */
+================================ */
 
 const monster = {
 
     active: false,
 
     x: 0,
-
     y: 0,
 
     width: 65,
-
     height: 65,
 
     hp: 100,
 
     direction: 1,
 
-    animation: 0,
-
-    defeated: 0
+    animation: 0
 
 };
 
 
-/* =================================
-   WORLD OBJECTS
-================================= */
+/* ================================
+   OBSTACLES
+================================ */
+
+let obstacles = [];
+
+let nextObstacleDistance = 40;
+
+
+/*
+สร้างสิ่งกีดขวาง
+
+rock = ก้อนหิน
+spike = หนาม
+pit = หลุม
+*/
+
+function createObstacle() {
+
+    const types = [
+        "rock",
+        "spike",
+        "pit"
+    ];
+
+    const type =
+    types[
+        Math.floor(
+            Math.random() * types.length
+        )
+    ];
+
+
+    let obstacle = {
+
+        type: type,
+
+        x:
+        cameraX +
+        canvas.width +
+
+        150 +
+
+        Math.random() * 200,
+
+        width: 0,
+
+        height: 0,
+
+        hit: false
+
+    };
+
+
+    if (type === "rock") {
+
+        obstacle.width = 55;
+        obstacle.height = 45;
+
+    }
+
+
+    if (type === "spike") {
+
+        obstacle.width = 55;
+        obstacle.height = 45;
+
+    }
+
+
+    if (type === "pit") {
+
+        obstacle.width = 100;
+        obstacle.height = 20;
+
+    }
+
+
+    obstacles.push(obstacle);
+
+}
+
+
+/* ================================
+   TREES
+================================ */
 
 let trees = [];
 
-
 function createWorld() {
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
 
         trees.push({
 
-            x: i * 250 +
+            x:
+            i * 250 +
             Math.random() * 150,
 
             size:
-            60 + Math.random() * 50
+            60 +
+            Math.random() * 50
 
         });
 
@@ -372,13 +356,13 @@ function createWorld() {
 createWorld();
 
 
-/* =================================
+/* ================================
    MICROPHONE
-================================= */
+================================ */
 
 let analyser;
-
 let audioData;
+let volume = 0;
 
 
 async function setupMicrophone() {
@@ -386,9 +370,7 @@ async function setupMicrophone() {
     const stream =
     await navigator.mediaDevices
     .getUserMedia({
-
         audio: true
-
     });
 
 
@@ -401,7 +383,6 @@ async function setupMicrophone() {
 
     analyser =
     audioContext.createAnalyser();
-
 
     analyser.fftSize = 256;
 
@@ -422,12 +403,9 @@ async function setupMicrophone() {
 }
 
 
-/* =================================
-   SOUND DETECTION
-================================= */
-
-let volume = 0;
-
+/* ================================
+   SOUND CONTROL
+================================ */
 
 function checkSound() {
 
@@ -458,7 +436,10 @@ function checkSound() {
 
 
     const percent =
-    Math.min(volume * 2, 100);
+    Math.min(
+        volume * 2,
+        100
+    );
 
 
     document
@@ -467,9 +448,7 @@ function checkSound() {
     percent + "%";
 
 
-    /* =============================
-       WALK
-    ============================= */
+    /* เดิน */
 
     if (
         volume > 10 &&
@@ -488,9 +467,7 @@ function checkSound() {
     }
 
 
-    /* =============================
-       JUMP
-    ============================= */
+    /* กระโดด */
 
     if (
 
@@ -509,9 +486,9 @@ function checkSound() {
 }
 
 
-/* =================================
+/* ================================
    JUMP
-================================= */
+================================ */
 
 function jump() {
 
@@ -522,18 +499,200 @@ function jump() {
 }
 
 
-/* =================================
-   MONSTER SPAWN
-================================= */
+/* ================================
+   OBSTACLE SPAWN
+================================ */
 
-let nextMonsterDistance = 100;
+function checkObstacleSpawn() {
+
+    if (
+        distance >=
+        nextObstacleDistance
+    ) {
+
+        createObstacle();
+
+
+        nextObstacleDistance +=
+
+        Math.floor(
+            Math.random() * 50
+        ) + 40;
+
+    }
+
+}
+
+
+/* ================================
+   COLLISION
+================================ */
+
+function checkObstacleCollision() {
+
+    const playerWorldX =
+    cameraX + player.x;
+
+
+    const playerBottom =
+    player.y + player.height;
+
+
+    for (const obstacle of obstacles) {
+
+        if (obstacle.hit) continue;
+
+
+        /*
+        หลุม
+        */
+
+        if (obstacle.type === "pit") {
+
+            if (
+
+                playerWorldX +
+                player.width >
+                obstacle.x &&
+
+                playerWorldX <
+                obstacle.x +
+                obstacle.width &&
+
+                !player.jumping
+
+            ) {
+
+                hitObstacle(obstacle);
+
+            }
+
+        }
+
+
+        /*
+        ก้อนหิน / หนาม
+        */
+
+        else {
+
+            const obstacleY =
+
+            canvas.height -
+            groundOffset -
+            obstacle.height;
+
+
+            if (
+
+                playerWorldX +
+                player.width >
+                obstacle.x &&
+
+                playerWorldX <
+                obstacle.x +
+                obstacle.width &&
+
+                playerBottom >
+                obstacleY
+
+            ) {
+
+                hitObstacle(obstacle);
+
+            }
+
+        }
+
+    }
+
+}
+
+
+function hitObstacle(obstacle) {
+
+    obstacle.hit = true;
+
+
+    if (player.invincible) return;
+
+
+    playerHP -= 20;
+
+
+    player.invincible = true;
+
+
+    document
+    .getElementById("message")
+    .innerHTML =
+    "💥 ชนสิ่งกีดขวาง!<br>❤️ HP -20";
+
+
+    setTimeout(() => {
+
+        player.invincible = false;
+
+    }, 1500);
+
+
+    setTimeout(() => {
+
+        document
+        .getElementById("message")
+        .innerHTML =
+        "🎤 พูดเพื่อเดิน<br>🔊 เสียงดังเพื่อกระโดด";
+
+    }, 2000);
+
+
+    if (playerHP <= 0) {
+
+        gameOver();
+
+    }
+
+}
+
+
+/* ================================
+   GAME OVER
+================================ */
+
+function gameOver() {
+
+    gameStarted = false;
+
+
+    document
+    .getElementById("message")
+    .innerHTML =
+    "💀 GAME OVER<br><br>คะแนน: " +
+    score;
+
+
+    setTimeout(() => {
+
+        location.reload();
+
+    }, 4000);
+
+}
+
+
+/* ================================
+   MONSTER SPAWN
+================================ */
+
+let nextMonsterDistance = 120;
 
 
 function checkMonsterSpawn() {
 
     if (
 
-        distance >= nextMonsterDistance &&
+        distance >=
+        nextMonsterDistance &&
 
         !monster.active
 
@@ -543,10 +702,16 @@ function checkMonsterSpawn() {
 
         monster.hp = 100;
 
+
         monster.x =
-        cameraX + canvas.width * 0.75;
+
+        cameraX +
+        canvas.width *
+        0.75;
+
 
         monster.y =
+
         canvas.height -
         groundOffset -
         monster.height;
@@ -557,15 +722,14 @@ function checkMonsterSpawn() {
         .innerHTML =
         "⚠️ มอนสเตอร์มาแล้ว!<br>📳 เขย่าเพื่อต่อย";
 
-
     }
 
 }
 
 
-/* =================================
+/* ================================
    SHAKE DETECTION
-================================= */
+================================ */
 
 let lastShake = 0;
 
@@ -591,7 +755,8 @@ function detectShake(event) {
         Math.abs(acc.z || 0);
 
 
-    const now = Date.now();
+    const now =
+    Date.now();
 
 
     if (
@@ -620,6 +785,7 @@ function attack() {
 
 
     const damage =
+
     Math.floor(
         Math.random() * 15
     ) + 10;
@@ -651,27 +817,23 @@ function attack() {
 }
 
 
-/* =================================
+/* ================================
    MONSTER DEFEATED
-================================= */
+================================ */
 
 function defeatMonster() {
 
     monster.active = false;
 
-    monster.defeated = 1;
-
-
     score += 100;
 
-
-    nextMonsterDistance += 100;
+    nextMonsterDistance += 120;
 
 
     document
     .getElementById("message")
     .innerHTML =
-    "🏆 ชนะแล้ว!<br>🎤 เดินทางต่อได้";
+    "🏆 กำจัดมอนสเตอร์แล้ว!<br>🎤 เดินทางต่อได้";
 
 
     setTimeout(() => {
@@ -686,9 +848,9 @@ function defeatMonster() {
 }
 
 
-/* =================================
+/* ================================
    MOTION PERMISSION
-================================= */
+================================ */
 
 async function setupMotion() {
 
@@ -703,19 +865,9 @@ async function setupMotion() {
 
     ) {
 
-        try {
-
-            await
-            DeviceMotionEvent
-            .requestPermission();
-
-        }
-
-        catch(error) {
-
-            console.log(error);
-
-        }
+        await
+        DeviceMotionEvent
+        .requestPermission();
 
     }
 
@@ -731,9 +883,9 @@ async function setupMotion() {
 }
 
 
-/* =================================
+/* ================================
    START GAME
-================================= */
+================================ */
 
 async function startGame() {
 
@@ -760,7 +912,7 @@ async function startGame() {
     catch(error) {
 
         alert(
-            "กรุณาอนุญาตไมโครโฟนก่อนเล่นเกม"
+            "กรุณาอนุญาตการใช้ไมโครโฟนและ Motion Sensor"
         );
 
         console.error(error);
@@ -770,18 +922,21 @@ async function startGame() {
 }
 
 
-/* =================================
-   UPDATE GAME
-================================= */
+/* ================================
+   UPDATE
+================================ */
 
 function update() {
+
+    if (!gameStarted) return;
+
 
     checkSound();
 
 
-    /* =============================
-       PLAYER MOVEMENT
-    ============================= */
+    /*
+    PLAYER WALK
+    */
 
     if (
 
@@ -808,7 +963,8 @@ function update() {
         ) {
 
             player.walkFrame =
-            1 - player.walkFrame;
+            1 -
+            player.walkFrame;
 
 
             player.walkTimer = 0;
@@ -818,16 +974,18 @@ function update() {
     }
 
 
-    /* =============================
-       GRAVITY
-    ============================= */
+    /*
+    GRAVITY
+    */
 
     player.velocityY += gravity;
 
-    player.y += player.velocityY;
+    player.y +=
+    player.velocityY;
 
 
     const groundY =
+
     canvas.height -
     groundOffset -
     player.height;
@@ -846,27 +1004,33 @@ function update() {
     }
 
 
-    /* =============================
-       MONSTER ANIMATION
-    ============================= */
+    /*
+    MONSTER ANIMATION
+    */
 
     if (monster.active) {
 
-        monster.animation += 0.08;
+        monster.animation +=
+        0.08;
 
 
         monster.x +=
-        monster.direction * 1.2;
+        monster.direction *
+        1.2;
 
 
         const minX =
+
         cameraX +
-        canvas.width * 0.55;
+        canvas.width *
+        0.55;
 
 
         const maxX =
+
         cameraX +
-        canvas.width * 0.8;
+        canvas.width *
+        0.8;
 
 
         if (
@@ -884,31 +1048,43 @@ function update() {
     }
 
 
+    checkObstacleSpawn();
+
+    checkObstacleCollision();
+
     checkMonsterSpawn();
 
 }
 
 
-/* =================================
+/* ================================
    DRAW BACKGROUND
-================================= */
+================================ */
 
 function drawBackground() {
 
-    /* SKY */
+    /*
+    SKY
+    */
 
     ctx.fillStyle =
     "#38bdf8";
 
+
     ctx.fillRect(
+
         0,
         0,
+
         canvas.width,
         canvas.height
+
     );
 
 
-    /* CLOUDS */
+    /*
+    CLOUDS
+    */
 
     ctx.fillStyle =
     "rgba(255,255,255,0.8)";
@@ -916,31 +1092,39 @@ function drawBackground() {
 
     for (
         let i = 0;
-        i < 5;
+        i < 6;
         i++
     ) {
 
-        const x =
+        let x =
+
         (
-            i * 300 -
+            i * 280 -
             cameraX * 0.1
         )
+
         % (canvas.width + 300);
 
 
+        if (x < -100)
+            x += canvas.width + 300;
+
+
         const y =
-        60 + i * 55;
+        60 + i * 50;
 
 
         ctx.beginPath();
 
+
         ctx.arc(
             x,
             y,
-            30,
+            25,
             0,
             Math.PI * 2
         );
+
 
         ctx.arc(
             x + 35,
@@ -950,23 +1134,28 @@ function drawBackground() {
             Math.PI * 2
         );
 
+
         ctx.arc(
             x + 70,
             y,
-            30,
+            25,
             0,
             Math.PI * 2
         );
+
 
         ctx.fill();
 
     }
 
 
-    /* GROUND */
+    /*
+    GROUND
+    */
 
     ctx.fillStyle =
     "#22c55e";
+
 
     ctx.fillRect(
 
@@ -984,16 +1173,18 @@ function drawBackground() {
 }
 
 
-/* =================================
+/* ================================
    DRAW TREES
-================================= */
+================================ */
 
 function drawTrees() {
 
     for (const tree of trees) {
 
         const screenX =
-        tree.x - cameraX * 0.5;
+
+        tree.x -
+        cameraX * 0.5;
 
 
         if (
@@ -1006,10 +1197,13 @@ function drawTrees() {
         ) continue;
 
 
-        /* trunk */
+        /*
+        TRUNK
+        */
 
         ctx.fillStyle =
         "#78350f";
+
 
         ctx.fillRect(
 
@@ -1026,13 +1220,16 @@ function drawTrees() {
         );
 
 
-        /* leaves */
+        /*
+        LEAVES
+        */
 
         ctx.fillStyle =
         "#15803d";
 
 
         ctx.beginPath();
+
 
         ctx.arc(
 
@@ -1058,30 +1255,230 @@ function drawTrees() {
 }
 
 
-/* =================================
+/* ================================
+   DRAW OBSTACLES
+================================ */
+
+function drawObstacles() {
+
+    for (const obstacle of obstacles) {
+
+        const x =
+        obstacle.x -
+        cameraX;
+
+
+        /*
+        ROCK
+        */
+
+        if (
+            obstacle.type ===
+            "rock"
+        ) {
+
+            ctx.fillStyle =
+            "#6b7280";
+
+
+            ctx.beginPath();
+
+
+            ctx.arc(
+
+                x +
+                obstacle.width / 2,
+
+                canvas.height -
+                groundOffset -
+                obstacle.height / 2,
+
+                obstacle.width / 2,
+
+                Math.PI,
+
+                0
+
+            );
+
+
+            ctx.fill();
+
+        }
+
+
+        /*
+        SPIKE
+        */
+
+        if (
+            obstacle.type ===
+            "spike"
+        ) {
+
+            ctx.fillStyle =
+            "#ef4444";
+
+
+            for (
+                let i = 0;
+                i < 4;
+                i++
+            ) {
+
+                ctx.beginPath();
+
+
+                ctx.moveTo(
+
+                    x + i * 14,
+
+                    canvas.height -
+                    groundOffset
+
+                );
+
+
+                ctx.lineTo(
+
+                    x + 7 + i * 14,
+
+                    canvas.height -
+                    groundOffset -
+                    obstacle.height
+
+                );
+
+
+                ctx.lineTo(
+
+                    x + 14 + i * 14,
+
+                    canvas.height -
+                    groundOffset
+
+                );
+
+
+                ctx.fill();
+
+            }
+
+        }
+
+
+        /*
+        PIT
+        */
+
+        if (
+            obstacle.type ===
+            "pit"
+        ) {
+
+            ctx.fillStyle =
+            "#111827";
+
+
+            ctx.fillRect(
+
+                x,
+
+                canvas.height -
+                groundOffset,
+
+                obstacle.width,
+
+                35
+
+            );
+
+
+            /*
+            ขอบหลุม
+            */
+
+            ctx.strokeStyle =
+            "#78350f";
+
+
+            ctx.lineWidth = 6;
+
+
+            ctx.strokeRect(
+
+                x,
+
+                canvas.height -
+                groundOffset,
+
+                obstacle.width,
+
+                30
+
+            );
+
+        }
+
+    }
+
+}
+
+
+/* ================================
    DRAW PLAYER
-================================= */
+================================ */
 
 function drawPlayer() {
 
-    const x = player.x;
+    const x =
+    player.x;
 
-    const y = player.y;
+
+    const y =
+    player.y;
 
 
     ctx.save();
 
 
-    /* ATTACK */
+    /*
+    กระพริบเมื่อโดนชน
+    */
 
-    if (player.attacking) {
+    if (
 
-        ctx.translate(15, 0);
+        player.invincible &&
+
+        Math.floor(Date.now() / 100) % 2 === 0
+
+    ) {
+
+        ctx.globalAlpha =
+        0.4;
 
     }
 
 
-    /* BODY */
+    /*
+    ATTACK MOVEMENT
+    */
+
+    if (
+        player.attacking
+    ) {
+
+        ctx.translate(
+            15,
+            0
+        );
+
+    }
+
+
+    /*
+    BODY
+    */
 
     ctx.fillStyle =
     "#2563eb";
@@ -1100,13 +1497,16 @@ function drawPlayer() {
     );
 
 
-    /* HEAD */
+    /*
+    HEAD
+    */
 
     ctx.fillStyle =
     "#f5cba7";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
 
@@ -1126,81 +1526,66 @@ function drawPlayer() {
     ctx.fill();
 
 
-    /* LEGS ANIMATION */
+    /*
+    LEGS
+    */
 
     ctx.strokeStyle =
     "#111827";
 
-    ctx.lineWidth = 8;
+    ctx.lineWidth =
+    8;
 
 
     ctx.beginPath();
 
 
+    let leg =
+    0;
+
+
     if (
-        player.velocityX > 0 &&
-        !monster.active
+        player.velocityX > 0
     ) {
 
-        const leg =
-        player.walkFrame ? 10 : -10;
-
-
-        ctx.moveTo(
-            x + 22,
-            y + 60
-        );
-
-
-        ctx.lineTo(
-            x + 20 + leg,
-            y + 80
-        );
-
-
-        ctx.moveTo(
-            x + 32,
-            y + 60
-        );
-
-
-        ctx.lineTo(
-            x + 35 - leg,
-            y + 80
-        );
+        leg =
+        player.walkFrame ?
+        10 :
+        -10;
 
     }
 
-    else {
 
-        ctx.moveTo(
-            x + 22,
-            y + 60
-        );
-
-        ctx.lineTo(
-            x + 20,
-            y + 80
-        );
+    ctx.moveTo(
+        x + 22,
+        y + 60
+    );
 
 
-        ctx.moveTo(
-            x + 32,
-            y + 60
-        );
+    ctx.lineTo(
+        x + 20 + leg,
+        y + 80
+    );
 
-        ctx.lineTo(
-            x + 35,
-            y + 80
-        );
 
-    }
+    ctx.moveTo(
+        x + 32,
+        y + 60
+    );
+
+
+    ctx.lineTo(
+        x + 35 - leg,
+        y + 80
+    );
 
 
     ctx.stroke();
 
 
-    /* ARMS */
+    /*
+    ARM
+    */
 
     ctx.beginPath();
 
@@ -1211,7 +1596,9 @@ function drawPlayer() {
     );
 
 
-    if (player.attacking) {
+    if (
+        player.attacking
+    ) {
 
         ctx.lineTo(
             x + 60,
@@ -1238,26 +1625,30 @@ function drawPlayer() {
 }
 
 
-/* =================================
+/* ================================
    DRAW MONSTER
-================================= */
+================================ */
 
 function drawMonster() {
 
     if (!monster.active) return;
 
 
-    const screenX =
-    monster.x - cameraX;
+    const x =
+    monster.x -
+    cameraX;
 
 
     const bob =
+
     Math.sin(
         monster.animation
     ) * 8;
 
 
-    /* BODY */
+    /*
+    BODY
+    */
 
     ctx.fillStyle =
     "#ef4444";
@@ -1265,9 +1656,10 @@ function drawMonster() {
 
     ctx.beginPath();
 
+
     ctx.arc(
 
-        screenX +
+        x +
         monster.width / 2,
 
         monster.y +
@@ -1286,7 +1678,9 @@ function drawMonster() {
     ctx.fill();
 
 
-    /* EYES */
+    /*
+    EYES
+    */
 
     ctx.fillStyle =
     "white";
@@ -1294,8 +1688,9 @@ function drawMonster() {
 
     ctx.beginPath();
 
+
     ctx.arc(
-        screenX + 20,
+        x + 20,
         monster.y + 25 + bob,
         8,
         0,
@@ -1304,7 +1699,7 @@ function drawMonster() {
 
 
     ctx.arc(
-        screenX + 45,
+        x + 45,
         monster.y + 25 + bob,
         8,
         0,
@@ -1315,7 +1710,9 @@ function drawMonster() {
     ctx.fill();
 
 
-    /* PUPILS */
+    /*
+    PUPILS
+    */
 
     ctx.fillStyle =
     "black";
@@ -1323,8 +1720,9 @@ function drawMonster() {
 
     ctx.beginPath();
 
+
     ctx.arc(
-        screenX + 20,
+        x + 20,
         monster.y + 25 + bob,
         3,
         0,
@@ -1333,7 +1731,7 @@ function drawMonster() {
 
 
     ctx.arc(
-        screenX + 45,
+        x + 45,
         monster.y + 25 + bob,
         3,
         0,
@@ -1344,17 +1742,19 @@ function drawMonster() {
     ctx.fill();
 
 
-    /* HP BAR */
+    /*
+    HP BAR
+    */
 
     ctx.fillStyle =
     "#374151";
 
 
     ctx.fillRect(
-        screenX,
-        monster.y - 20,
-        70,
-        10
+        x,
+        monster.y - 25,
+        75,
+        12
     );
 
 
@@ -1364,25 +1764,29 @@ function drawMonster() {
 
     ctx.fillRect(
 
-        screenX,
+        x,
 
-        monster.y - 20,
+        monster.y - 25,
 
-        70 *
+        75 *
         (monster.hp / 100),
 
-        10
+        12
 
     );
 
 }
 
 
-/* =================================
+/* ================================
    DRAW HUD
-================================= */
+================================ */
 
 function drawHUD() {
+
+    /*
+    HUD BOX
+    */
 
     ctx.fillStyle =
     "rgba(0,0,0,0.55)";
@@ -1391,8 +1795,8 @@ function drawHUD() {
     ctx.fillRect(
         10,
         10,
-        190,
-        80
+        220,
+        115
     );
 
 
@@ -1406,12 +1810,23 @@ function drawHUD() {
 
     ctx.fillText(
 
+        "❤️ HP: " +
+        playerHP,
+
+        20,
+        38
+
+    );
+
+
+    ctx.fillText(
+
         "📍 Distance: " +
         Math.floor(distance) +
         " m",
 
         20,
-        38
+        68
 
     );
 
@@ -1422,45 +1837,28 @@ function drawHUD() {
         score,
 
         20,
-        68
+        98
 
     );
 
 
-    /* PROGRESS */
+    /*
+    NEXT OBSTACLE
+    */
 
     ctx.fillStyle =
-    "#374151";
+    "rgba(0,0,0,0.55)";
 
 
     ctx.fillRect(
 
-        canvas.width - 210,
+        canvas.width - 220,
 
-        20,
+        10,
 
-        190,
+        210,
 
-        20
-
-    );
-
-
-    ctx.fillStyle =
-    "#22c55e";
-
-
-    ctx.fillRect(
-
-        canvas.width - 210,
-
-        20,
-
-        (
-            distance % 100
-        ) * 1.9,
-
-        20
+        70
 
     );
 
@@ -1475,22 +1873,35 @@ function drawHUD() {
 
     ctx.fillText(
 
+        "🪨 ระวังสิ่งกีดขวาง!",
+
+        canvas.width - 205,
+
+        38
+
+    );
+
+
+    ctx.fillText(
+
         "Next Monster: " +
-        Math.floor(nextMonsterDistance) +
+        Math.floor(
+            nextMonsterDistance
+        ) +
         "m",
 
-        canvas.width - 210,
+        canvas.width - 205,
 
-        65
+        62
 
     );
 
 }
 
 
-/* =================================
+/* ================================
    GAME LOOP
-================================= */
+================================ */
 
 function gameLoop() {
 
@@ -1498,21 +1909,18 @@ function gameLoop() {
 
 
     ctx.clearRect(
-
         0,
-
         0,
-
         canvas.width,
-
         canvas.height
-
     );
 
 
     drawBackground();
 
     drawTrees();
+
+    drawObstacles();
 
     drawPlayer();
 
